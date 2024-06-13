@@ -30,6 +30,7 @@
 #include "starkware/channel/channel_statistics.h"
 #include "starkware/crypt_tools/utils.h"
 #include "starkware/utils/to_from_string.h"
+#include "starkware/algebra/big_int.h"
 
 namespace starkware {
 
@@ -49,11 +50,16 @@ class ProverChannel : public Channel {
 
   void SendFieldElement(const FieldElement& value, const std::string& annotation = "") {
     SendFieldElementImpl(value);
+    std::vector<std::byte> raw_bytes(value.SizeInBytes());
+    value.ToBytes(raw_bytes);
+
+    auto b = BigInt<4>::FromBytes(raw_bytes, true);
+
     if (AnnotationsEnabled()) {
       AnnotateProverToVerifier(
-          annotation + ": Field Element(" + value.ToString() + ")", value.SizeInBytes());
+          annotation + "HERE(" + b.ToString() + ") | " + ": Field Element(" + value.ToString() + ")", value.SizeInBytes());
     }
-    proof_statistics_.field_element_count += 1;
+    proof_statistics_.field_elesment_count += 1;
   }
 
   void SendFieldElementSpan(

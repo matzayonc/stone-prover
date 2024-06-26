@@ -25,42 +25,55 @@
 #include "starkware/crypt_tools/utils.h"
 #include "starkware/stl_utils/containers.h"
 
-namespace starkware {
-namespace table {
-namespace details {
+namespace starkware
+{
+  namespace table
+  {
+    namespace details
+    {
 
-std::set<uint64_t> AllQueryRows(
-    const std::set<RowCol>& data_queries, const std::set<RowCol>& integrity_queries) {
-  std::set<uint64_t> all_query_rows = {};
-  for (const RowCol& query : data_queries) {
-    all_query_rows.insert(query.GetRow());
-  }
-  for (const RowCol& query : integrity_queries) {
-    all_query_rows.insert(query.GetRow());
-  }
-  return all_query_rows;
-}
-
-std::set<RowCol> ElementsToBeTransmitted(
-    size_t n_columns, const std::set<uint64_t>& all_query_rows,
-    const std::set<RowCol>& integrity_queries) {
-  std::set<RowCol> to_be_transmitted;
-  for (size_t row : all_query_rows) {
-    for (size_t col = 0; col < n_columns; col++) {
-      const RowCol query_loc(row, col);
-      // Add the location (row, col) only if it is not part of integrity_queries.
-      if (integrity_queries.count(query_loc) == 0) {
-        to_be_transmitted.insert(query_loc);
+      std::set<uint64_t> AllQueryRows(
+          const std::set<RowCol> &data_queries, const std::set<RowCol> &integrity_queries)
+      {
+        std::set<uint64_t> all_query_rows = {};
+        for (const RowCol &query : data_queries)
+        {
+          all_query_rows.insert(query.GetRow());
+        }
+        for (const RowCol &query : integrity_queries)
+        {
+          all_query_rows.insert(query.GetRow());
+        }
+        return all_query_rows;
       }
-    }
-  }
-  return to_be_transmitted;
-}
 
-std::string ElementDecommitAnnotation(const RowCol& row_col) {
-  return "Row " + std::to_string(row_col.GetRow()) + ", Column " + std::to_string(row_col.GetCol());
-}
+      std::set<RowCol> ElementsToBeTransmitted(
+          size_t n_columns, const std::set<uint64_t> &all_query_rows,
+          const std::set<RowCol> &integrity_queries)
+      {
+        std::cerr << "ElementsToBeTransmitted" << all_query_rows.size() << "x" << n_columns << std::endl;
+        std::set<RowCol> to_be_transmitted;
+        for (size_t row : all_query_rows)
+        {
 
-}  // namespace details
-}  // namespace table
-}  // namespace starkware
+          for (size_t col = 0; col < n_columns; col++)
+          {
+            const RowCol query_loc(row, col);
+            // Add the location (row, col) only if it is not part of integrity_queries.
+            if (integrity_queries.count(query_loc) == 0)
+            {
+              to_be_transmitted.insert(query_loc);
+            }
+          }
+        }
+        return to_be_transmitted;
+      }
+
+      std::string ElementDecommitAnnotation(const RowCol &row_col)
+      {
+        return "Row " + std::to_string(row_col.GetRow()) + ", Column " + std::to_string(row_col.GetCol());
+      }
+
+    } // namespace details
+  } // namespace table
+} // namespace starkware

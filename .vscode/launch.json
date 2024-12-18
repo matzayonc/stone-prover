@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug CPU AIR Prover",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bazelbin/src/starkware/main/cpu/cpu_air_prover",
+            "args": [
+                "-v", "9",
+                "--logtostderr",
+                "--out_file=basic_proof.json",
+                "--private_input_file=../sandstorm/example/basic/air-private-input.json",
+                "--public_input_file=../sandstorm/example/basic/air-public-input.json",
+                "--prover_config_file=e2e_test/Cairo/cpu_air_prover_config.json",
+                "--parameter_file=e2e_test/Cairo/cpu_air_params.json",
+                "-generate_annotations",
+                "2>basic_proof.log"
+            ],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Breakpoint at Merkle Decommitment",
+                    "text": "break starkware::MerkleCommitmentScheme::VerifyDecommitment",
+                    "ignoreFailures": false
+                }
+            ],
+            "preLaunchTask": "build-debug",
+            "miDebuggerPath": "/usr/bin/gdb"
+        }
+    ]
+} 
